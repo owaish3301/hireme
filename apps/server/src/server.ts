@@ -1,14 +1,29 @@
 import express from "express";
+import { config } from "./config/env.js";
+import { Router } from "express";
+import { healthRouter } from "./modules/health/health.routes.js";
+import { GlobalErrorHandler } from "./modules/globals/handler.js";
 
 const app = express();
-const port = process.env.PORT || 4000;
 
 app.use(express.json());
 
-app.get("/health", (_req, res) => {
-  res.json({ status: "ok" });
+const apiRoter = Router();
+apiRoter.use("", healthRouter);
+
+app.use("/api", apiRoter);
+
+app.use(GlobalErrorHandler);
+
+export const server = app.listen(config.PORT, () => {
+  console.log(`Server listening on port ${config.PORT}`);
 });
 
-app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
-});
+const shutdown = async (signal:string) => {
+  server.close(async ()=>{
+    process.exit(0);
+  })
+}
+
+process.on("SIGTERM", ()=>{shutdown("SIGTERM")});
+process.on("SIGINT", ()=>{shutdown("SIGINT")});

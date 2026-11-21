@@ -27,6 +27,17 @@ reminders. And decided on the MVP.
 
 
 Docker call: for now need only postgres + redis(depends on mvp system design) for the backend. at deployment will see what to dockerise.
+added modular monolithic architecture
+added graceful shutdown
 
-Phase 0 remaining: the compose file itself, a `/health` endpoint that
-checks db + redis, and the CI skeleton (install, typecheck, lint, build).
+pending work 
+- logger
+- heltmet and cors
+- standard api response
+
+future work identified now
+- CI pipeline to do typecheck and linting and build
+- multistage dockerfile
+- handling db connection pooling
+- shutting down db connections on shutdown of app
+- rate limiting 

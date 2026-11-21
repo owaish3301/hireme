@@ -11,17 +11,29 @@
     "dev": "tsx watch src/server.ts",
     "start": "node dist/server.js",
     "lint": "eslint .",
-    "check-types": "tsc --noEmit"
+    "check-types": "tsc --noEmit",
+    "contract:emit": "prisma contract emit",
+    "db:init" : "prisma db init",
+    "db:plan" : "prisma migration plan",
+    "db:migrate" : "prisma db migrate --advanced-ref db",
+    "db:migrate:deploy" : "prisma db migrate",
+    "db:verify" : "prisma db verify",
+    "db:status" : "prisma db status",
+    "db:update" : "prisma db update"
   },
   "dependencies": {
+    "@prisma/orm-postgres": "8.0.0-rc.24",
+    "dotenv": "^18.0.10",
     "express": "^5.3.0"
   },
   "devDependencies": {
+    "@prisma/cli-engine": "0.10.0",
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@types/express": "^5.0.6",
     "@types/node": "26.4.1",
     "eslint": "10.9.1",
+    "prisma": "8.0.0-rc.34",
     "tsx": "^4.19.3",
     "typescript": "^7.0.2"
   }
