@@ -1,0 +1,28 @@
+{
+  "name": "hireme-server",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "dist/server.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch src/server.ts",
+    "start": "node dist/server.js",
+    "lint": "eslint .",
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "express": "^5.3.0"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@types/express": "^5.0.6",
+    "@types/node": "26.4.1",
+    "eslint": "10.9.1",
+    "tsx": "^4.19.3",
+    "typescript": "^7.0.2"
+  }
+}
