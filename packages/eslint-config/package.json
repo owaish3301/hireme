@@ -4,8 +4,14 @@
   "type": "module",
   "private": true,
   "exports": {
-    "./base": "./base.js",
-    "./react-internal": "./react-internal.js"
+    "./base": {
+      "types": "./base.d.ts",
+      "default": "./base.js"
+    },
+    "./react-internal": {
+      "types": "./react-internal.d.ts",
+      "default": "./react-internal.js"
+    }
   },
   "devDependencies": {
     "@babel/core": "8.0.1",
