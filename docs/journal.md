@@ -30,10 +30,6 @@ Docker call: for now need only postgres + redis(depends on mvp system design) fo
 added modular monolithic architecture
 added graceful shutdown
 
-pending work 
-- logger
-- heltmet and cors
-- standard api response
 
 future work identified now
 - CI pipeline to do typecheck and linting and build
@@ -41,3 +37,9 @@ future work identified now
 - handling db connection pooling
 - shutting down db connections on shutdown of app
 - rate limiting 
+
+### 2026-11-22 - 
+- add helmet to backend
+- add pino logger for http and application error
+- add cors
+- standard api response

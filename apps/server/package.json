@@ -13,26 +13,32 @@
     "lint": "eslint .",
     "check-types": "tsc --noEmit",
     "contract:emit": "prisma contract emit",
-    "db:init" : "prisma db init",
-    "db:plan" : "prisma migration plan",
-    "db:migrate" : "prisma db migrate --advanced-ref db",
-    "db:migrate:deploy" : "prisma db migrate",
-    "db:verify" : "prisma db verify",
-    "db:status" : "prisma db status",
-    "db:update" : "prisma db update"
+    "db:init": "prisma db init",
+    "db:plan": "prisma migration plan",
+    "db:migrate": "prisma db migrate --advanced-ref db",
+    "db:migrate:deploy": "prisma db migrate",
+    "db:verify": "prisma db verify",
+    "db:status": "prisma db status",
+    "db:update": "prisma db update"
   },
   "dependencies": {
     "@prisma/orm-postgres": "8.0.0-rc.24",
+    "cors": "^2.8.6",
     "dotenv": "^18.0.10",
-    "express": "^5.3.0"
+    "express": "^5.3.0",
+    "helmet": "^8.3.0",
+    "pino": "^10.4.0",
+    "pino-http": "^11.0.0"
   },
   "devDependencies": {
     "@prisma/cli-engine": "0.10.0",
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/node": "26.4.1",
     "eslint": "10.9.1",
+    "pino-pretty": "^13.2.0",
     "prisma": "8.0.0-rc.34",
     "tsx": "^4.19.3",
     "typescript": "^7.0.2"

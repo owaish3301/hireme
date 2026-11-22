@@ -3,9 +3,16 @@ import { config } from "./config/env.js";
 import { Router } from "express";
 import { healthRouter } from "./modules/health/health.routes.js";
 import { GlobalErrorHandler } from "./modules/globals/handler.js";
+import helmet from "helmet";
+import cors from "cors";
+import { pinoApiLoggerConfig } from "./lib/logger.js";
+import { corsOptions } from "./utils/corsConfig.js";
 
 const app = express();
 
+app.use(pinoApiLoggerConfig);
+app.use(cors(corsOptions));
+app.use(helmet());
 app.use(express.json());
 
 const apiRoter = Router();
