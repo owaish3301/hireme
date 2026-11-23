@@ -31,15 +31,30 @@ added modular monolithic architecture
 added graceful shutdown
 
 
-future work identified now
-- CI pipeline to do typecheck and linting and build
-- multistage dockerfile
-- handling db connection pooling
-- shutting down db connections on shutdown of app
-- rate limiting 
-
 ### 2026-11-22 - 
 - add helmet to backend
 - add pino logger for http and application error
 - add cors
 - standard api response
+- add user and session model
+- auth route
+
+
+### 2026-11-23 - continueWithGoogle
+- add google oauth
+- when users will click login button -> request GET /api/auth/google and it will redirect user to google page with a state cookie token
+- user conset on google page and gets redirected back to /api/auth/google/callback
+- match the state token that google returned in the query param and one in the user's cookie that was set earlier
+- get google tokens and verify them
+- upsert the user in the db
+- create a refresh token and put it in the db, deliver with cookie
+- if its a new user redirect to onboarding page, old user to home page
+
+
+## future work identified now
+- CI pipeline to do typecheck and linting and build
+- multistage dockerfile
+- handling db connection pooling
+- shutting down db connections on shutdown of app
+- rate limiting 
+- frontend will need to handle login failed

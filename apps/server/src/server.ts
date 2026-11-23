@@ -7,6 +7,8 @@ import helmet from "helmet";
 import cors from "cors";
 import { pinoApiLoggerConfig } from "./lib/logger.js";
 import { corsOptions } from "./utils/corsConfig.js";
+import { authRouter } from "./modules/auth/auth.route.js";
+import cookieParser from "cookie-parser"
 
 const app = express();
 
@@ -14,9 +16,11 @@ app.use(pinoApiLoggerConfig);
 app.use(cors(corsOptions));
 app.use(helmet());
 app.use(express.json());
+app.use(cookieParser())
 
 const apiRoter = Router();
 apiRoter.use("", healthRouter);
+apiRoter.use("/auth", authRouter);
 
 app.use("/api", apiRoter);
 

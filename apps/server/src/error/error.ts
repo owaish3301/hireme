@@ -1,4 +1,4 @@
-type Options = {
+export type Options = {
     code? : string,
     statusCode? : number,
     isOperational? : boolean,

@@ -1,5 +1,28 @@
 // use prisma-8
-
 model User {
-  id String @id @onCreate(uuid())
+  id        String    @id @onCreate(uuid())
+  name      String
+  email     String
+  avatarUrl String?
+  googleSub String    @unique
+  createdAt DateTime  @onCreate(now())
+  updatedAt DateTime  @onUpdate(now()) @onCreate(now())
+  sessions  Session[]
+}
+
+model Session {
+  id                String    @id @onCreate(uuid())
+  userId            String
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  refreshTokenHash  String    @unique
+  familyId          String
+  replacedById      String?
+  replacedBySession Session?  @relation("SessionReplacement", fields: [replacedById], references: [id])
+  replacedSessions  Session[] @relation("SessionReplacement")
+  createdAt         DateTime  @onCreate(now())
+  expiresAt         DateTime
+  revokedAt         DateTime?
+
+  @@index([userId])
+  @@index([familyId])
 }
