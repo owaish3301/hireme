@@ -91,3 +91,11 @@ export const revokeSessionFamily = async (familyId: string) => {
     .where((s) => s.revokedAt.isNull())
     .updateAndCount({ revokedAt: new Date() });
 };
+
+
+export const getMe = async (userId:string) => {
+  const user = await db.orm.public.User
+    .select("avatarUrl", "email", "id", "isOnboarded", "name")
+    .first({id:userId});
+  return user;
+}

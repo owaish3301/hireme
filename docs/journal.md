@@ -50,6 +50,9 @@ added graceful shutdown
 - create a refresh token and put it in the db, deliver with cookie
 - if its a new user redirect to onboarding page, old user to home page
 
+### 2026-11-24 - still auth
+- add refresh route to rotate tokens
+- add me endpoint to get the user info
 
 ## future work identified now
 - CI pipeline to do typecheck and linting and build
