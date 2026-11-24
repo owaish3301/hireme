@@ -1,10 +1,13 @@
 import { Request, Response } from "express";
 import {
   redirectToGoogleService,
+  refreshTokenService,
   signupOrSignInService,
 } from "./auth.service.js";
 import { config } from "../../config/env.js";
 import { REFRESH_TOKEN_TTL_MS } from "./auth.constant.js";
+import { UnauthenticatedError } from "../../error/auth.error.js";
+import { sendSuccess } from "../../utils/response.js";
 
 export const handleRedirectToGoogle = (_req: Request, res: Response) => {
   const { url, state } = redirectToGoogleService();
@@ -64,3 +67,27 @@ export const handleGoogleCallback = async (req: Request, res: Response) => {
     return res.redirect(`${config.FRONTEND_URL}/login?error=login_failed`);
   }
 };
+
+
+export const handleRefreshToken = async (req:Request, res:Response) => {
+  const { refresh_token } = req.cookies;
+  if(!refresh_token || typeof(refresh_token) !== "string"){
+    throw new UnauthenticatedError();
+  }
+
+  const {newRefreshToken, accessToken} = await refreshTokenService(refresh_token);
+  res.cookie("refresh_token", newRefreshToken, {
+      maxAge: REFRESH_TOKEN_TTL_MS,
+      httpOnly: true,
+      secure: config.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/api/auth",
+    });
+  return sendSuccess(
+    res,
+    {
+      accessToken,
+    },
+    "auth successful",
+  );
+}

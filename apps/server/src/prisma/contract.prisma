@@ -24,6 +24,7 @@ model Session {
   expiresAt         DateTime
   revokedAt         DateTime?
 
+  @@index([refreshTokenHash])
   @@index([userId])
   @@index([familyId])
 }

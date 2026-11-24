@@ -1,11 +1,25 @@
 import { googleAuthClient } from "./auth.google.js";
 import { createHash, randomBytes } from "node:crypto";
 import { config } from "../../config/env.js";
-import { createNewSession, createNewUser } from "./auth.repository.js";
+import {
+  createNewSession,
+  createNewUser,
+  rotateSession,
+} from "./auth.repository.js";
 import { AuthError } from "../../error/auth.error.js";
+import {
+  createStateToken,
+  createRefreshToken,
+} from "../../utils/createTokens.js";
+import jwt from "jsonwebtoken";
+import { ACCESS_TOKEN_TTL_MS } from "./auth.constant.js";
+
+const hashRefreshToken = (refreshToken: string) => {
+  return createHash("sha256").update(refreshToken).digest("hex");
+};
 
 export const redirectToGoogleService = () => {
-  const state = randomBytes(16).toString("hex");
+  const state = createStateToken();
   const url = googleAuthClient.generateAuthUrl({
     scope: ["openid", "email", "profile"],
     state,
@@ -13,8 +27,6 @@ export const redirectToGoogleService = () => {
 
   return { url, state };
 };
-
-
 
 export const signupOrSignInService = async (code: string) => {
   const { tokens } = await googleAuthClient.getToken(code);
@@ -35,12 +47,25 @@ export const signupOrSignInService = async (code: string) => {
 
   const user = await createNewUser(payload);
 
-  const refreshToken = randomBytes(32).toString("base64url");
-  const refreshTokenHash = createHash("sha256")
-    .update(refreshToken)
-    .digest("hex");
+  const refreshToken = createRefreshToken();
+  const refreshTokenHash = hashRefreshToken(refreshToken);
 
   await createNewSession({ userId: user.id, refreshTokenHash });
 
   return { refreshToken, isOnboarded: user.isOnboarded };
+};
+
+export const refreshTokenService = async (refreshToken: string) => {
+  const refreshTokenHash = hashRefreshToken(refreshToken);
+
+  const newRefreshToken = createRefreshToken();
+  const newRefreshTokenHash = hashRefreshToken(newRefreshToken);
+
+  const userId = await rotateSession(refreshTokenHash, newRefreshTokenHash);
+
+  const accessToken = jwt.sign({ sub: userId }, config.JWT_SECRET, {
+    expiresIn: ACCESS_TOKEN_TTL_MS,
+  });
+
+  return { newRefreshToken, accessToken };
 };
