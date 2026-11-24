@@ -45,7 +45,7 @@ export const handleGoogleCallback = async (req: Request, res: Response) => {
   }
 
   try{
-    const { refreshToken, isNewUser } = await signupOrSignInService(code);
+    const { refreshToken, isOnboarded } = await signupOrSignInService(code);
     res.cookie("refresh_token", refreshToken, {
       maxAge: REFRESH_TOKEN_TTL_MS,
       httpOnly: true,
@@ -54,7 +54,7 @@ export const handleGoogleCallback = async (req: Request, res: Response) => {
       path: "/api/auth",
     });
 
-    if (isNewUser) {
+    if (!isOnboarded) {
       return res.redirect(`${config.FRONTEND_URL}/onboard`);
     } else {
       return res.redirect(`${config.FRONTEND_URL}/home`);

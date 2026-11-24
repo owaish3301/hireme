@@ -42,5 +42,5 @@ export const signupOrSignInService = async (code: string) => {
 
   await createNewSession({ userId: user.id, refreshTokenHash });
 
-  return { refreshToken, isNewUser:user.isOnboarded};
+  return { refreshToken, isOnboarded: user.isOnboarded };
 };
