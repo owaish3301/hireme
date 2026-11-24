@@ -1,2 +1,2 @@
 export const REFRESH_TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000;
-export const ACCESS_TOKEN_TTL_MS = 10 * 60; // 10 minutes 
+export const ACCESS_TOKEN_TTL_SEC = 10 * 60; // 10 minutes 

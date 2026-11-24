@@ -12,7 +12,7 @@ import {
   createRefreshToken,
 } from "../../utils/createTokens.js";
 import jwt from "jsonwebtoken";
-import { ACCESS_TOKEN_TTL_MS } from "./auth.constant.js";
+import { ACCESS_TOKEN_TTL_SEC } from "./auth.constant.js";
 
 const hashRefreshToken = (refreshToken: string) => {
   return createHash("sha256").update(refreshToken).digest("hex");
@@ -64,7 +64,7 @@ export const refreshTokenService = async (refreshToken: string) => {
   const userId = await rotateSession(refreshTokenHash, newRefreshTokenHash);
 
   const accessToken = jwt.sign({ sub: userId }, config.JWT_SECRET, {
-    expiresIn: ACCESS_TOKEN_TTL_MS,
+    expiresIn: ACCESS_TOKEN_TTL_SEC,
   });
 
   return { newRefreshToken, accessToken };
