@@ -69,6 +69,9 @@ export const handleGoogleCallback = async (req: Request, res: Response) => {
 };
 
 
+// TODO: cap the session family's total lifetime. right now every rotation
+// extends it by 7 days, so a family can live forever if it keeps refreshing.
+// a family should die a fixed number of days after the original login.
 export const handleRefreshToken = async (req:Request, res:Response) => {
   const { refresh_token } = req.cookies;
   if(!refresh_token || typeof(refresh_token) !== "string"){
