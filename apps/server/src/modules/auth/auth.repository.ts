@@ -16,8 +16,7 @@ export const createNewUser = async (userInfo: TokenPayload) => {
     "name",
     "email",
     "avatarUrl",
-    "createdAt",
-    "updatedAt",
+    "isOnboarded",
   ).upsert({
     create: { googleSub: sub, email, name, avatarUrl: picture },
     update: { name, email, avatarUrl: picture },

@@ -34,7 +34,6 @@ export const signupOrSignInService = async (code: string) => {
   }
 
   const user = await createNewUser(payload);
-  const isNewUser = user.updatedAt.getTime() - user.createdAt.getTime() <= 100;
 
   const refreshToken = randomBytes(32).toString("base64url");
   const refreshTokenHash = createHash("sha256")
@@ -43,5 +42,5 @@ export const signupOrSignInService = async (code: string) => {
 
   await createNewSession({ userId: user.id, refreshTokenHash });
 
-  return { refreshToken, isNewUser};
+  return { refreshToken, isNewUser:user.isOnboarded};
 };

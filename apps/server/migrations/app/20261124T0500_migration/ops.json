@@ -1,0 +1,38 @@
+[
+  {
+    "id": "setDefault.User.isOnboarded",
+    "label": "Set default on \"User\".\"isOnboarded\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "isOnboarded",
+        "table": "User"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"isOnboarded\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "User",
+          "isOnboarded"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "column \"isOnboarded\" on \"User\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "set default on \"isOnboarded\"",
+        "sql": "ALTER TABLE \"public\".\"User\" ALTER COLUMN \"isOnboarded\" SET DEFAULT false"
+      }
+    ],
+    "postcheck": []
+  }
+]

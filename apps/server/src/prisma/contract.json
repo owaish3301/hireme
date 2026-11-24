@@ -205,6 +205,13 @@
                   "kind": "scalar"
                 }
               },
+              "isOnboarded": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/bool@1",
+                  "kind": "scalar"
+                }
+              },
               "name": {
                 "nullable": false,
                 "type": {
@@ -256,6 +263,9 @@
                 },
                 "id": {
                   "column": "id"
+                },
+                "isOnboarded": {
+                  "column": "isOnboarded"
                 },
                 "name": {
                   "column": "name"
@@ -439,6 +449,15 @@
                   "dataType": "pg/text",
                   "nullable": false
                 },
+                "isOnboarded": {
+                  "codecId": "pg/bool@1",
+                  "dataType": "pg/bool",
+                  "default": {
+                    "kind": "literal",
+                    "value": false
+                  },
+                  "nullable": false
+                },
                 "name": {
                   "codecId": "pg/text@1",
                   "dataType": "pg/text",
@@ -474,7 +493,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "4ac7798d7c086c5b61e3475d4a385712fb0f3e1786482e2f1d0ca24268dca970"
+    "storageHash": "c171c82dc07a89cb93b93182d8a858326b74124fcf7a718680473650b368b13b"
   },
   "execution": {
     "executionHash": "e6d792aa93dcf87dc32425407560bc7991b7795bb15ad53ae832a9dca1978002",

@@ -1,13 +1,14 @@
 // use prisma-8
 model User {
-  id        String    @id @onCreate(uuid())
-  name      String
-  email     String
-  avatarUrl String?
-  googleSub String    @unique
-  createdAt DateTime  @onCreate(now())
-  updatedAt DateTime  @onUpdate(now()) @onCreate(now())
-  sessions  Session[]
+  id          String    @id @onCreate(uuid())
+  name        String
+  email       String
+  avatarUrl   String?
+  googleSub   String    @unique
+  isOnboarded Boolean   @default(false)
+  createdAt   DateTime  @onCreate(now())
+  updatedAt   DateTime  @onUpdate(now()) @onCreate(now())
+  sessions    Session[]
 }
 
 model Session {
