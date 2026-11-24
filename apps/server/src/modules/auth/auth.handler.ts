@@ -11,6 +11,7 @@ export const handleRedirectToGoogle = (_req: Request, res: Response) => {
   res
     .cookie("state", state, {
       httpOnly: true,
+      secure: config.NODE_ENV === "production", 
       sameSite: "lax",
       maxAge: 10 * 60 * 1000,
     })
@@ -38,22 +39,28 @@ export const handleGoogleCallback = async (req: Request, res: Response) => {
     !stateCookie ||
     stateCookie !== state
   ) {
-    return res.redirect(`${config.FRONTEND_URL}/login?error=login_failed`);
+    return res.redirect(
+      `${config.FRONTEND_URL}/login?error=login_failed&message="something went wrong while signing you in. try again"`,
+    );
   }
 
-  const { refreshToken, isNewUser } = await signupOrSignInService(code);
+  try{
+    const { refreshToken, isNewUser } = await signupOrSignInService(code);
+    res.cookie("refresh_token", refreshToken, {
+      maxAge: REFRESH_TOKEN_TTL_MS,
+      httpOnly: true,
+      secure: config.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/api/auth",
+    });
 
-  res.cookie("refresh_token", refreshToken, {
-    maxAge: REFRESH_TOKEN_TTL_MS,
-    httpOnly: true,
-    secure: config.NODE_ENV === "production",
-    sameSite: "lax",
-    path: "/api/auth",
-  });
-
-  if (isNewUser) {
-    return res.redirect(`${config.FRONTEND_URL}/onboard`);
-  } else {
-    return res.redirect(`${config.FRONTEND_URL}/home`);
+    if (isNewUser) {
+      return res.redirect(`${config.FRONTEND_URL}/onboard`);
+    } else {
+      return res.redirect(`${config.FRONTEND_URL}/home`);
+    }
+  } catch(e){
+    req.log.error({err:e}, "google signin failed");
+    return res.redirect(`${config.FRONTEND_URL}/login?error=login_failed&message="google signin failed"`);
   }
 };

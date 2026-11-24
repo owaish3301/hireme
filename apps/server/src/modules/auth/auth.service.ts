@@ -1,8 +1,8 @@
 import { googleAuthClient } from "./auth.google.js";
 import { createHash, randomBytes } from "node:crypto";
 import { config } from "../../config/env.js";
-import { AuthError } from "../../error/auth.error.js";
 import { createNewSession, createNewUser } from "./auth.repository.js";
+import { AuthError } from "../../error/auth.error.js";
 
 export const redirectToGoogleService = () => {
   const state = randomBytes(16).toString("hex");
@@ -20,7 +20,7 @@ export const signupOrSignInService = async (code: string) => {
   const { tokens } = await googleAuthClient.getToken(code);
 
   if (!tokens.id_token) {
-    return {refreshToken:null, isNewUser:null, err:"google sent invalid tokens"};
+    throw new AuthError("token response missing token_id");
   }
 
   const ticket = await googleAuthClient.verifyIdToken({
@@ -30,11 +30,7 @@ export const signupOrSignInService = async (code: string) => {
 
   const payload = ticket.getPayload();
   if (!payload) {
-    return {
-      refreshToken: null,
-      isNewUser: null,
-      err: "google sent invalid payload",
-    };
+    throw new AuthError("id token verified but payload is empty");
   }
 
   const user = await createNewUser(payload);
@@ -47,5 +43,5 @@ export const signupOrSignInService = async (code: string) => {
 
   await createNewSession({ userId: user.id, refreshTokenHash });
 
-  return { refreshToken, isNewUser, err:null };
+  return { refreshToken, isNewUser};
 };

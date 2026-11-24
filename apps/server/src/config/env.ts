@@ -20,7 +20,7 @@ export const config = {
     return port;
   })(),
   DSN: requireEnv("DATABASE_URL"),
-  NODE_ENV: (() => {
+  NODE_ENV: ((): "production" | "development" => {
     const level =
       process.env.NODE_ENV === "production" ? "production" : "development";
     if (level === "development") {
@@ -48,6 +48,6 @@ export const config = {
     }
     return url;
   })(),
-  FRONTEND_URL : requireEnv("FRONTEND_URL"),
-  JWT_SECRET : requireEnv("JWT_SECRET"),
+  FRONTEND_URL: requireEnv("FRONTEND_URL"),
+  JWT_SECRET: requireEnv("JWT_SECRET"),
 }; 
