@@ -40,7 +40,7 @@ export const handleGoogleCallback = async (req: Request, res: Response) => {
     stateCookie !== state
   ) {
     return res.redirect(
-      `${config.FRONTEND_URL}/login?error=login_failed&message="something went wrong while signing you in. try again"`,
+      `${config.FRONTEND_URL}/login?error=login_failed`,
     );
   }
 
@@ -61,6 +61,6 @@ export const handleGoogleCallback = async (req: Request, res: Response) => {
     }
   } catch(e){
     req.log.error({err:e}, "google signin failed");
-    return res.redirect(`${config.FRONTEND_URL}/login?error=login_failed&message="google signin failed"`);
+    return res.redirect(`${config.FRONTEND_URL}/login?error=login_failed`);
   }
 };
