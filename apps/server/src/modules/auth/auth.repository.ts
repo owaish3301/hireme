@@ -99,3 +99,14 @@ export const getMe = async (userId:string) => {
     .first({id:userId});
   return user;
 }
+
+export const revokeSessions = async (refreshTokenHash:string) => {
+  const session = await db.orm.public.Session
+    .select("familyId")
+    .first({refreshTokenHash});
+
+  if(!session){
+    throw new UnauthenticatedError();
+  }
+  revokeSessionFamily(session.familyId);
+}

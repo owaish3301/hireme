@@ -108,3 +108,13 @@ export const handleGetMe = async (req: Request, res: Response) => {
     user,
   });
 };
+
+export const handleLogout = async (req:Request, res:Response) => {
+  const refreshToken:unknown = req.cookies?.refresh_token;
+  if(!refreshToken || typeof(refreshToken)!=="string"){
+    throw new UnauthenticatedError();
+  }
+
+  res.clearCookie("refresh_token");
+  return sendSuccess(res,{});
+}

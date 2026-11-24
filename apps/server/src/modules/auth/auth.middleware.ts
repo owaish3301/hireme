@@ -8,9 +8,12 @@ export const requireAuth = (req:Request, res:Response, next:NextFunction) => {
     if(!accessToken){
         throw new UnauthenticatedError();
     }
-
+    const token = accessToken.split(" ")[1];
+    if(!token){
+        throw new UnauthenticatedError();
+    }
     try{
-        const {sub} = jwt.verify(accessToken, config.JWT_SECRET);
+        const {sub} = jwt.verify(token, config.JWT_SECRET);
         if(typeof(sub)!=="string"){
             throw new UnauthenticatedError();
         }

@@ -4,6 +4,7 @@ import { config } from "../../config/env.js";
 import {
   createNewSession,
   createNewUser,
+  revokeSessions,
   rotateSession,
 } from "./auth.repository.js";
 import { AuthError } from "../../error/auth.error.js";
@@ -69,3 +70,13 @@ export const refreshTokenService = async (refreshToken: string) => {
 
   return { newRefreshToken, accessToken };
 };
+
+
+export const logoutService = async (refreshToken:string) => {
+  
+  const refreshTokenHash = hashRefreshToken(refreshToken);
+
+  await revokeSessions(refreshTokenHash);
+
+  return;
+}
