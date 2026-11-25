@@ -1,6 +1,7 @@
 import { TokenPayload } from "google-auth-library";
 import { db } from "../../prisma/db.js";
 import { AuthError, UnauthenticatedError } from "../../error/auth.error.js";
+import { errors } from "../../error/constants.js";
 import { randomUUID } from "node:crypto";
 import {
   REFRESH_REUSE_GRACE_MS,
@@ -12,6 +13,7 @@ export const createNewUser = async (userInfo: TokenPayload) => {
   if (!email || !name) {
     throw new AuthError("google account missing email or name", {
       statusCode: 500,
+      code: errors.INTERNAL_SERVER_ERROR,
     });
   }
   const user = await db.orm.public.User.select(

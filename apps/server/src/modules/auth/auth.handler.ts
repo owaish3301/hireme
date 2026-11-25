@@ -91,13 +91,13 @@ export const handleGoogleCallback = async (req: Request, res: Response) => {
 // extends it by 7 days, so a family can live forever if it keeps refreshing.
 // a family should die a fixed number of days after the original login.
 export const handleRefreshToken = async (req: Request, res: Response) => {
-  const { refresh_token } = req.cookies;
-  if (!refresh_token || typeof refresh_token !== "string") {
+  const refreshToken: unknown = req.cookies?.[REFRESH_COOKIE_NAME];
+  if (!refreshToken || typeof refreshToken !== "string") {
     throw new UnauthenticatedError();
   }
 
   const { newRefreshToken, accessToken } =
-    await refreshTokenService(refresh_token);
+    await refreshTokenService(refreshToken);
   res.cookie(REFRESH_COOKIE_NAME, newRefreshToken, {
     maxAge: REFRESH_TOKEN_TTL_MS,
     ...refreshCookieOptions,
@@ -127,7 +127,7 @@ export const handleGetMe = async (req: Request, res: Response) => {
 };
 
 export const handleLogout = async (req:Request, res:Response) => {
-  const refreshToken:unknown = req.cookies?.refresh_token;
+  const refreshToken:unknown = req.cookies?.[REFRESH_COOKIE_NAME];
   if(!refreshToken || typeof(refreshToken)!=="string"){
     throw new UnauthenticatedError();
   }
