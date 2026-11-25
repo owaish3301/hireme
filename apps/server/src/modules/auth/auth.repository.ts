@@ -2,7 +2,10 @@ import { TokenPayload } from "google-auth-library";
 import { db } from "../../prisma/db.js";
 import { AuthError, UnauthenticatedError } from "../../error/auth.error.js";
 import { randomUUID } from "node:crypto";
-import { REFRESH_TOKEN_TTL_MS } from "./auth.constant.js";
+import {
+  REFRESH_REUSE_GRACE_MS,
+  REFRESH_TOKEN_TTL_MS,
+} from "./auth.constant.js";
 
 export const createNewUser = async (userInfo: TokenPayload) => {
   const { sub, email, name, picture } = userInfo;
@@ -52,8 +55,20 @@ export const rotateSession = async (
     throw new UnauthenticatedError();
   }
 
+  // grace window: the token was rotated moments ago, most likely by a
+  // parallel request from another tab or a retry after a network blip.
+  // reject this request but don't treat it as theft, so the family survives.
+  if (
+    oldSession.replacedById &&
+    oldSession.revokedAt &&
+    Date.now() - oldSession.revokedAt.getTime() < REFRESH_REUSE_GRACE_MS
+  ) {
+    throw new UnauthenticatedError();
+  }
+
   if (oldSession.revokedAt || oldSession.replacedById) {
-    // revoke the session family
+    // reuse outside the grace window (or a logged-out session):
+    // assume the token was stolen and revoke the whole session family
     await revokeSessionFamily(oldSession.familyId);
     throw new UnauthenticatedError();
   }
@@ -108,5 +123,6 @@ export const revokeSessions = async (refreshTokenHash:string) => {
   if(!session){
     throw new UnauthenticatedError();
   }
-  revokeSessionFamily(session.familyId);
+  await revokeSessionFamily(session.familyId);
+  return;
 }

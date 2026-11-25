@@ -4,13 +4,13 @@ import AppError, { type Options } from "./error.js";
 export class AuthError extends AppError {
   constructor(
     msg: string,
-    options: Options = {
-      isOperational: true,
-      statusCode: 400,
-      code: errors.AUTHENTICATION_ERROR,
-    },
+    options: Options,
   ) {
-    super(msg, options);
+    super(msg, {
+      isOperational:options.isOperational ?? true,
+      statusCode:options.statusCode ?? 401,
+      code : options.code ?? errors.AUTHENTICATION_ERROR,
+    });
   }
 }
 

@@ -4,6 +4,7 @@ import {
   handleGoogleCallback,
   handleRefreshToken,
   handleGetMe,
+  handleLogout,
 } from "./auth.handler.js";
 import { requireAuth } from "./auth.middleware.js";
 
@@ -13,4 +14,4 @@ authRouter.get("/google", handleRedirectToGoogle);
 authRouter.get("/google/callback", handleGoogleCallback);
 authRouter.post("/refresh", handleRefreshToken);
 authRouter.get("/me", requireAuth, handleGetMe);
-authRouter.post("/logout", requireAuth, )
+authRouter.post("/logout", handleLogout);

@@ -11,10 +11,15 @@ function requireEnv(name:string):string{
     return val;
 }
 
-export const config = {
+function stripTrailingSlash(url: string): string {
+  return url.endsWith("/") ? url.slice(0, -1) : url;
+}
+
+function loadConfig() {
+  return {
   PORT: (() => {
     const port = Number(requireEnv("PORT"));
-    if (port < 1 || port > 65535) {
+    if (!Number.isInteger(port) || port < 1 || port > 65535) {
       throw new ConfigError("invalid port number");
     }
     return port;
@@ -41,13 +46,29 @@ export const config = {
   })(),
   GOOGLE_CLIENT_ID: requireEnv("GOOGLE_CLIENT_ID"),
   GOOGLE_CLIENT_SECRET: requireEnv("GOOGLE_CLIENT_SECRET"),
-  BASE_API_URL: (() => {
-    const url = requireEnv("BASE_API_URL");
-    if (url.endsWith("/")) {
-      return url.substring(0, url.length - 1);
+  BASE_API_URL: stripTrailingSlash(requireEnv("BASE_API_URL")),
+  FRONTEND_URL: stripTrailingSlash(requireEnv("FRONTEND_URL")),
+  JWT_SECRET: (() => {
+    const secret = requireEnv("JWT_SECRET");
+    // HS256 needs a key at least as long as its 256-bit output to be safe
+    if (Buffer.byteLength(secret, "utf8") < 32) {
+      throw new ConfigError("JWT_SECRET must be at least 32 bytes");
     }
-    return url;
+    return secret;
   })(),
-  FRONTEND_URL: requireEnv("FRONTEND_URL"),
-  JWT_SECRET: requireEnv("JWT_SECRET"),
-}; 
+};
+}
+
+function loadConfigOrExit(): ReturnType<typeof loadConfig> {
+  try {
+    return loadConfig();
+  } catch (err) {
+    if (err instanceof ConfigError) {
+      console.error(`[config] ${err.message}. check your .env file`);
+      process.exit(1);
+    }
+    throw err;
+  }
+}
+
+export const config = loadConfigOrExit();
