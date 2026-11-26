@@ -19,13 +19,13 @@ export function sendError(
   res: Response,
   message: string = "Something went wrong",
   statusCode: number = 500,
-  error : {code : string, details?:unknown}
+  error: { code: string; details?: unknown },
 ) {
-    return res.status(statusCode).json({
-        message,
-        success: false,
-        data:null,
-        meta:null,
-        error,
-    })
+  return res.status(statusCode).json({
+    message,
+    success: false,
+    data: null,
+    meta: null,
+    error,
+  });
 }

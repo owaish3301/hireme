@@ -107,12 +107,10 @@ export const refreshTokenService = async (refreshToken: string) => {
   return { newRefreshToken, accessToken };
 };
 
-
-export const logoutService = async (refreshToken:string) => {
-  
+export const logoutService = async (refreshToken: string) => {
   const refreshTokenHash = hashRefreshToken(refreshToken);
 
   await revokeSessions(refreshTokenHash);
 
   return;
-}
+};

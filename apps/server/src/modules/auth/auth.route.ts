@@ -8,7 +8,7 @@ import {
 } from "./auth.handler.js";
 import { requireAuth } from "./auth.middleware.js";
 
-export const authRouter:Router = Router()
+export const authRouter: Router = Router();
 
 authRouter.get("/google", handleRedirectToGoogle);
 authRouter.get("/google/callback", handleGoogleCallback);

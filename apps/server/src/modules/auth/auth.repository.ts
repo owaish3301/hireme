@@ -1,4 +1,4 @@
-import { TokenPayload } from "google-auth-library";
+import type { TokenPayload } from "google-auth-library";
 import { db } from "../../prisma/db.js";
 import { AuthError, UnauthenticatedError } from "../../error/auth.error.js";
 import { errors } from "../../error/constants.js";
@@ -87,19 +87,18 @@ export const rotateSession = async (
       expiresAt: new Date(Date.now() + REFRESH_TOKEN_TTL_MS),
     });
 
-    const updated = await tx.orm.public.Session
-    .where({ id: oldSession.id })
-    .where((s)=>s.revokedAt.isNull())
-    .update({
-      replacedById: newSession.id,
-      revokedAt: new Date(),
-    });
-    if(!updated){
-      // guard against race condition so 2 refresh at once only 1 can revoke the old session 
+    const updated = await tx.orm.public.Session.where({ id: oldSession.id })
+      .where((s) => s.revokedAt.isNull())
+      .update({
+        replacedById: newSession.id,
+        revokedAt: new Date(),
+      });
+    if (!updated) {
+      // guard against race condition so 2 refresh at once only 1 can revoke the old session
       throw new UnauthenticatedError();
     }
   });
-  
+
   return oldSession.userId;
 };
 
@@ -109,22 +108,25 @@ export const revokeSessionFamily = async (familyId: string) => {
     .updateAndCount({ revokedAt: new Date() });
 };
 
-
-export const getMe = async (userId:string) => {
-  const user = await db.orm.public.User
-    .select("avatarUrl", "email", "id", "isOnboarded", "name")
-    .first({id:userId});
+export const getMe = async (userId: string) => {
+  const user = await db.orm.public.User.select(
+    "avatarUrl",
+    "email",
+    "id",
+    "isOnboarded",
+    "name",
+  ).first({ id: userId });
   return user;
-}
+};
 
-export const revokeSessions = async (refreshTokenHash:string) => {
-  const session = await db.orm.public.Session
-    .select("familyId")
-    .first({refreshTokenHash});
+export const revokeSessions = async (refreshTokenHash: string) => {
+  const session = await db.orm.public.Session.select("familyId").first({
+    refreshTokenHash,
+  });
 
-  if(!session){
+  if (!session) {
     throw new UnauthenticatedError();
   }
   await revokeSessionFamily(session.familyId);
   return;
-}
+};

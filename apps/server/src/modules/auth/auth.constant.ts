@@ -2,7 +2,7 @@ import type { CookieOptions } from "express";
 import { config } from "../../config/env.js";
 
 export const REFRESH_TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
-export const ACCESS_TOKEN_TTL_SEC = 10 * 60; // 10 minutes 
+export const ACCESS_TOKEN_TTL_SEC = 10 * 60; // 10 minutes
 
 // how long an already-rotated refresh token is tolerated (rejected, but
 // without revoking the family) to absorb concurrent refreshes from tabs/retries

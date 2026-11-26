@@ -3,7 +3,7 @@ import { config } from "../config/env.js";
 import { pinoHttp } from "pino-http";
 
 export const logger = pino({
-  level: config.NODE_ENV==="production"?"info":"debug",
+  level: config.NODE_ENV === "production" ? "info" : "debug",
 
   transport:
     config.NODE_ENV !== "production"

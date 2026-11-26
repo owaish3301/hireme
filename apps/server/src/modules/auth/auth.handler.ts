@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
 import {
   logoutService,
   redirectToGoogleService,
@@ -73,7 +73,7 @@ export const handleGoogleCallback = async (req: Request, res: Response) => {
     });
     res.cookie(REFRESH_COOKIE_NAME, refreshToken, {
       maxAge: REFRESH_TOKEN_TTL_MS,
-      ...refreshCookieOptions
+      ...refreshCookieOptions,
     });
 
     if (!isOnboarded) {
@@ -102,12 +102,9 @@ export const handleRefreshToken = async (req: Request, res: Response) => {
     maxAge: REFRESH_TOKEN_TTL_MS,
     ...refreshCookieOptions,
   });
-  return sendSuccess(
-    res,
-    {
-      accessToken,
-    },
-  );
+  return sendSuccess(res, {
+    accessToken,
+  });
 };
 
 export const handleGetMe = async (req: Request, res: Response) => {
@@ -126,14 +123,14 @@ export const handleGetMe = async (req: Request, res: Response) => {
   });
 };
 
-export const handleLogout = async (req:Request, res:Response) => {
-  const refreshToken:unknown = req.cookies?.[REFRESH_COOKIE_NAME];
-  if(!refreshToken || typeof(refreshToken)!=="string"){
+export const handleLogout = async (req: Request, res: Response) => {
+  const refreshToken: unknown = req.cookies?.[REFRESH_COOKIE_NAME];
+  if (!refreshToken || typeof refreshToken !== "string") {
     throw new UnauthenticatedError();
   }
 
   await logoutService(refreshToken);
 
   res.clearCookie(REFRESH_COOKIE_NAME, refreshCookieOptions);
-  return sendSuccess(res,{});
-}
+  return sendSuccess(res, {});
+};

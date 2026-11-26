@@ -1,15 +1,18 @@
 import express from "express";
 import { config } from "./config/env.js";
 import { Router } from "express";
-import { healthRouter } from "./modules/health/health.routes.js";
-import { GlobalErrorHandler, NotFoundHandler } from "./modules/globals/handler.js";
+import {
+  GlobalErrorHandler,
+  NotFoundHandler,
+} from "./modules/globals/handler.js";
 import helmet from "helmet";
 import cors from "cors";
 import { logger, pinoApiLoggerConfig } from "./lib/logger.js";
 import { db } from "./prisma/db.js";
 import { corsOptions } from "./utils/corsConfig.js";
 import { authRouter } from "./modules/auth/auth.route.js";
-import cookieParser from "cookie-parser"
+import cookieParser from "cookie-parser";
+import { makeHealthModule } from "./modules/health/health.module.js";
 
 const app = express();
 
@@ -17,10 +20,10 @@ app.use(pinoApiLoggerConfig);
 app.use(cors(corsOptions));
 app.use(helmet());
 app.use(express.json());
-app.use(cookieParser())
+app.use(cookieParser());
 
 const apiRouter = Router();
-apiRouter.use("", healthRouter);
+apiRouter.use("", makeHealthModule({ db }));
 apiRouter.use("/auth", authRouter);
 
 app.use("/api", apiRouter);
