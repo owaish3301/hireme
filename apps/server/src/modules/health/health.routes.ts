@@ -1,8 +1,8 @@
 import { Router } from "express";
-import type { HealthHandlers } from "./health.handler.js";
+import type { HealthHandler } from "./health.handler.js";
 
-export const makeHealthRouter = (healthHandlers: HealthHandlers) => {
+export const makeHealthRouter = (healthHandler: HealthHandler) => {
   const healthRouter: Router = Router();
-  healthRouter.get("/health", healthHandlers.healthHandler);
+  healthRouter.get("/health", healthHandler.healthHandler);
   return healthRouter;
 };

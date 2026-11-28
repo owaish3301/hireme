@@ -1,17 +1,20 @@
 import { Router } from "express";
-import {
-  handleRedirectToGoogle,
-  handleGoogleCallback,
-  handleRefreshToken,
-  handleGetMe,
-  handleLogout,
-} from "./auth.handler.js";
-import { requireAuth } from "./auth.middleware.js";
+import type { AuthHandler } from "./auth.handler.js";
+import type { AuthMiddleware } from "./auth.middleware.js";
 
-export const authRouter: Router = Router();
+export const makeAuthRoute = ({
+  handler,
+  middleware,
+}: {
+  handler: AuthHandler;
+  middleware: AuthMiddleware;
+}) => {
+  const authRouter: Router = Router();
 
-authRouter.get("/google", handleRedirectToGoogle);
-authRouter.get("/google/callback", handleGoogleCallback);
-authRouter.post("/refresh", handleRefreshToken);
-authRouter.get("/me", requireAuth, handleGetMe);
-authRouter.post("/logout", handleLogout);
+  authRouter.get("/google", handler.handleRedirectToGoogle);
+  authRouter.get("/google/callback", handler.handleGoogleCallback);
+  authRouter.post("/refresh", handler.handleRefreshToken);
+  authRouter.get("/me", middleware.requireAuth, handler.handleGetMe);
+  authRouter.post("/logout", handler.handleLogout);
+  return authRouter;
+};

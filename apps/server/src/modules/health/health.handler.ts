@@ -3,10 +3,10 @@ import type { Request, Response } from "express";
 import { sendSuccess } from "../../utils/response.js";
 import type { HealthRepository } from "./health.repository.js";
 
-export const makeHealthHandlers = (healthRepository: HealthRepository) => {
+export const makeHealthHandler = (repository: HealthRepository) => {
   return {
     healthHandler: async (req: Request, res: Response) => {
-      const result = await healthRepository.healthCheck();
+      const result = await repository.healthCheck();
       if (!result.ok) {
         // the client only sees a generic 500; the real cause goes to the logs
         req.log.error(
@@ -25,4 +25,4 @@ export const makeHealthHandlers = (healthRepository: HealthRepository) => {
   };
 };
 
-export type HealthHandlers = ReturnType<typeof makeHealthHandlers>;
+export type HealthHandler = ReturnType<typeof makeHealthHandler>;

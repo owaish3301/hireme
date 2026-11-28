@@ -9,10 +9,10 @@ import helmet from "helmet";
 import cors from "cors";
 import { logger, pinoApiLoggerConfig } from "./lib/logger.js";
 import { db } from "./prisma/db.js";
-import { corsOptions } from "./utils/corsConfig.js";
-import { authRouter } from "./modules/auth/auth.route.js";
+import { corsOptions } from "./modules/globals/corsConfig.js";
 import cookieParser from "cookie-parser";
 import { makeHealthModule } from "./modules/health/health.module.js";
+import { makeAuthModule } from "./modules/auth/auth.module.js";
 
 const app = express();
 
@@ -24,7 +24,8 @@ app.use(cookieParser());
 
 const apiRouter = Router();
 apiRouter.use("", makeHealthModule({ db }));
-apiRouter.use("/auth", authRouter);
+const auth = makeAuthModule({ db, config });
+apiRouter.use("/auth", auth.router);
 
 app.use("/api", apiRouter);
 
